@@ -22,9 +22,14 @@ if __name__ == '__main__':
     main()
 
 
-def uploadQuote(filePath):
+def uploadQuote(filePath,uploadType):
 
-    #filePath = "C:\\Users\\JB\\Desktop\\QuoteManager\\test.csv"
+
+    if uploadType == None:
+        print("No Upload Selection")
+        return
+    else:
+        print(uploadType)
 
     if filePath == None:  #Cancels running of function if user selects Cancel
         print("No File")
@@ -39,21 +44,48 @@ def uploadQuote(filePath):
 
     os.chdir(thePath)
 
-    InsertIt = QuoteManagerModel.dbAction()
+    def quotepartsUpload(fileName=fileName):
+        InsertIt = QuoteManagerModel.dbAction()
 
-    with open(fileName, 'rb') as f:  #read csv file
-        reader = csv.reader(f)
-        for row in reader:
-            rowid = row[0]  #todo create better id and ensure unique (quote#,Sim,Expiry Date?)
-            sim = row[1]   #todo Add check if all numbers
-            cost = float(row[2]) #ensures it's a float to enter double value into db
+        with open(fileName, 'rb') as f:  #read csv file
+            reader = csv.reader(f)
 
-            query = "INSERT INTO quoteparts VALUES (%s,%s,%s)" % (rowid,sim[:11],cost) #Insert id, sim, cost into table // grabs only first 11 digits of SIM
+            for row in reader:
+                rowid = row[0]  #todo create better id and ensure unique (quote#,Sim,Expiry Date?)
+                sim = row[1]   #todo Add check if all numbers
+                cost = float(row[2]) #ensures it's a float to enter double value into db
 
-            InsertIt.dbInsert(query)
+                query = "INSERT INTO quoteparts VALUES (%s,%s,%s)" % (rowid,sim[:11],cost) #Insert id, sim, cost into table // grabs only first 11 digits of SIM
 
-    InsertIt.dbClose()
-    print("Upload Complete")
+                InsertIt.dbInsert(query)
+
+        print("Upload Complete")
+
+    def customerUpload(fileName=fileName): #todo add in check to ensure file proper file headers are in csv and then skip them (do for all options)
+        InsertIt = QuoteManagerModel.dbAction()
+
+        with open(fileName, 'rb') as f:  #read csv file
+            reader = csv.reader(f)
+
+            for row in reader:
+                custId = row[0]
+                custName = str(row[1])
+
+                query = "INSERT INTO customer VALUES (%s,'%s');" % (custId,custName)
+                InsertIt.dbInsert(query)
+
+        print("Upload Complete")
+
+
+
+    if uploadType == 'New Quote':
+        quotepartsUpload()
+    elif uploadType =="Customer List":
+        customerUpload()
+    else:
+        raise ValueError()
+
+
 
 
 

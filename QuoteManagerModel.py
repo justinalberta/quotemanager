@@ -23,19 +23,25 @@ import MySQLdb
 
 class dbAction():
 
-
-    host="localhost"
-    user="jbates"
-    password="redblue"
-    dbname="QuoteManager"
-
-    db = MySQLdb.connect(host,user,password,dbname) #create connection
-
-    def __init__(self,host=host,user=user,password=password,dbname=dbname):
+    def __init__(self):
         pass
 
 
-    def dbInsert(self,query,db=db):
+
+    def dbConnect(self):
+        host="localhost"
+        user="jbates"
+        password="redblue"
+        dbname="QuoteManager"
+
+        db = MySQLdb.connect(host,user,password,dbname) #create connection
+        return db
+
+
+
+    def dbInsert(self,query):
+
+        db = self.dbConnect()
 
         cursor = db.cursor()
         try:
@@ -46,20 +52,17 @@ class dbAction():
         except:
            # Rollback in case there is any error
            db.rollback()
-           print("error")
+           raise
+           print("DB error")
+
+        db.close()
 
 
 
+    def dbQuery(self,query):
 
-    def dbQuery(self,query,db=db):
+        db = self.dbConnect()
 
-##        host="localhost"
-##        user="jbates"
-##        password="redblue"
-##        dbname="QuoteManager"
-##
-##        db = MySQLdb.connect(host,user,password,dbname) #create connection
-##        cursor = db.cursor()
         cursor = db.cursor()
         try:
            # Execute the SQL command
@@ -77,11 +80,6 @@ class dbAction():
 
         return results
 
-    def dbClose(self,db=db):
-        db.close()
 
-##qq = "SELECT * FROM customer"
-##
-##theResults = dbase(query=qq)
-##
-##print (theResults[0][1])
+
+

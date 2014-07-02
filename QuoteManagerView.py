@@ -19,17 +19,12 @@ if __name__ == '__main__':
 import wx
 import QuoteManagerController
 from functools import partial
+import config
 
 class Frame(wx.Frame):
 
-
     def __init__(self,parent,id):
         self.uploadScreen(parent,id)
-
-
-    def onSelect(self,event): #gets option for upload type
-            i=event.GetString()
-            print(i)
 
     def uploadScreen(self,parent,id):
         wx.Frame.__init__(self,parent,id, 'Quote Manager', size =(500,500))
@@ -37,20 +32,30 @@ class Frame(wx.Frame):
         status = self.CreateStatusBar()
         self.menuFunc(parent,id)
 
+        def onSelect(event): #gets option for upload type
+            selection = event.GetString()                                                  #<-------------------- Need to get var to
+            config.selection = selection
+
         uploadOptions = ['New Quote','Part List','Customer List','Supplier List']
         uploadCombo = wx.ComboBox(uploadPanel, pos=(20, 10), choices=uploadOptions,style=wx.CB_READONLY)
-        uploadCombo.Bind(wx.EVT_COMBOBOX, self.onSelect)
+        uploadCombo.Bind(wx.EVT_COMBOBOX, onSelect)
 
 ##        selectFileButton = wx.Button(uploadPanel,label="Select File",pos=(20,40))
 ##        selectFileButton.Bind(wx.EVT_BUTTON, self.fileFind)
         def upLoadIt(self):
-            fileFinder = fileFind()
-            QuoteManagerController.uploadQuote(fileFinder)
-            wx.StaticText(uploadPanel,-1,"Upload Complete",(40,100))
+            fileFinder = fileFind() #Run by Upload button. If no file is selected, then print message and return.
+            if fileFinder ==  None:
+                wx.StaticText(uploadPanel,-1,"No file selected",(40,100))
+                return
+            else:
+                QuoteManagerController.uploadQuote(fileFinder,config.selection)
+                wx.StaticText(uploadPanel,-1,"Upload Complete",(40,100))
 
 
-        def fileFind(): #todo Fix this to auto select csv
-            wildcard = "File Source (*.csv|*|*)" \
+
+
+        def fileFind(): #Select file to be uploaded, default csv files
+            wildcard = "CSV Files (*.csv;)|*.csv|" \
             "All files (*.*)|*.*"
             fileFind = wx.FileDialog(self,message="Choose a file",defaultFile="",wildcard=wildcard,style=wx.OPEN)
             if fileFind.ShowModal()== wx.ID_OK:
