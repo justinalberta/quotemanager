@@ -59,7 +59,7 @@ def uploadQuote(filePath,uploadType):
 
                 InsertIt.dbInsert(query)
 
-        print("Upload Complete")
+        print("Quote Upload Complete")
 
     def customerUpload(fileName=fileName): #todo add in check to ensure file proper file headers are in csv and then skip them (do for all options)
         InsertIt = QuoteManagerModel.dbAction()
@@ -74,7 +74,40 @@ def uploadQuote(filePath,uploadType):
                 query = "INSERT INTO customer VALUES (%s,'%s');" % (custId,custName)
                 InsertIt.dbInsert(query)
 
-        print("Upload Complete")
+        print("Customer Upload Complete")
+
+    def partsUpload(fileName=fileName): #todo add in check to ensure file proper file headers are in csv and then skip them (do for all options)
+        InsertIt = QuoteManagerModel.dbAction()
+
+        with open(fileName, 'rb') as f:  #read csv file
+            reader = csv.reader(f)
+
+            for row in reader:
+                sim = row[0]
+                partNumber = str(row[1])
+                description = str(row[2])
+
+                query = "INSERT INTO parttable VALUES (%s,'%s','%s');" % (sim[:11],partNumber,description)
+                InsertIt.dbInsert(query)
+
+        print("Part Upload Complete")
+
+    def supplierUpload(fileName=fileName): #todo add in check to ensure file proper file headers are in csv and then skip them (do for all options)
+        InsertIt = QuoteManagerModel.dbAction()
+
+        with open(fileName, 'rb') as f:  #read csv file
+            reader = csv.reader(f)
+
+            for row in reader:
+                supplierNumber = row[0]
+                print(supplierNumber)
+                supplierName = str(row[1])
+                print(supplierName)
+
+                query = "INSERT INTO supplier VALUES ('%s','%s');" % (supplierNumber,supplierName)
+                InsertIt.dbInsert(query)
+
+        print("Supplier Upload Complete")
 
 
 
@@ -82,8 +115,14 @@ def uploadQuote(filePath,uploadType):
         quotepartsUpload()
     elif uploadType =="Customer List":
         customerUpload()
+
+    elif uploadType == "Part List":
+        partsUpload()
+    elif uploadType == "Supplier List":
+        supplierUpload()
     else:
-        raise ValueError()
+        print("No upload type selected")
+        return
 
 
 
