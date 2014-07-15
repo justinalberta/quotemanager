@@ -127,8 +127,21 @@ def uploadQuote(filePath,uploadType):
 
 
 
+def uploadQuoteHeader(quoteNumber,quoteSupplier,quoteCustomer,quoteBranch,quoteEffDate,quoteExpDate,salesperson):
+     query = "INSERT INTO quotetable VALUES ('%s','%s','%s','%s','%s','%s','%s');" % (quoteNumber,quoteSupplier,quoteCustomer,quoteBranch,quoteEffDate,quoteExpDate,salesperson)
+     InsertIt = QuoteManagerModel.dbAction()
+     InsertIt.dbInsert(query)
 
 
+class commentPrinter():
+    def __init__(self):             #<------------- left off here
+        pass
+
+    def lookUp():
+        pass
+
+    def export():
+        pass
 
 ##def quoteTemplate():
 ##    #create quote upload template
