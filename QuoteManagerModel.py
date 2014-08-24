@@ -4,7 +4,7 @@
 #
 # Author:      JB
 #
-# Created:     29/06/2014
+# Created:     30/07/2014
 # Copyright:   (c) JB 2014
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
@@ -15,71 +15,85 @@ def main():
 if __name__ == '__main__':
     main()
 
-
-
-#!/usr/bin/python
-
-import MySQLdb
+import os
+import pypyodbc
+import sys
 
 class dbAction():
 
-    def __init__(self):
-        pass
 
+    def resource_path(self,relative_path):
+        '''Get absolute path to resource, works for dev and for PyInstaller '''
+        try:
+            # PyInstaller creates a temp folder and stores path in _MEIPASS
+            base_path = sys._MEIPASS
+            print('mei',base_path)
 
+        except Exception:
+            base_path = os.path.abspath(".")
+            print('abs',base_path)
+
+        print (os.path.join(base_path, relative_path))
+
+        return os.path.join(base_path, relative_path)
 
     def dbConnect(self):
-        host="localhost"
-        user="jbates"
-        password="redblue"
-        dbname="QuoteManager"
 
-        db = MySQLdb.connect(host,user,password,dbname) #create connection
-        return db
+        #fileLoc = os.path.join(os.path.dirname(__file__), 'Data\config.txt')
 
+        fileLoc = self.resource_path('Data\\config.txt')
 
+        print(fileLoc)
+
+        file = open(fileLoc, 'r')
+
+        path = file.readline()
+
+        #dbConn = 'Driver={Microsoft Access Driver (*.mdb, *.accdb)};DBQ=C:\\Users\\JB\\Desktop\\BuyerToolsDB.accdb;'
+
+        conn = pypyodbc.connect(path.strip())
+        return conn
+
+    #Uid=Admin;Pwd=;'
 
     def dbInsert(self,query):
 
         db = self.dbConnect()
 
-        cursor = db.cursor()
+        cur = db.cursor()
+
         try:
-           # Execute the SQL command
-           cursor.execute(query)
-           # Commit your changes in the database
-           db.commit()
-        except:
-           # Rollback in case there is any error
-           db.rollback()
-           raise
-           print("DB error")
+
+            cur.execute(query)
+
+            cur.commit()
+
+        except Exception,e:
+
+            db.rollback()
+
+            print("Exception - Error")
+            print(e)
 
         db.close()
-
 
 
     def dbQuery(self,query):
 
         db = self.dbConnect()
 
-        cursor = db.cursor()
+        cur = db.cursor()
         try:
            # Execute the SQL command
-           cursor.execute(query)
+           cur.execute(query)
            # Commit your changes in the database
-           db.commit()
-        except:
+        except Exception,e:
            # Rollback in case there is any error
            db.rollback()
-           print("error")
+           print("Exception - error")
+           print (e)
 
-        results = cursor.fetchall()
-
-        db.close()
+        results = cur.fetchall()
 
         return results
-
-
-
-
+        db.close()

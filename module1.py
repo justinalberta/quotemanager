@@ -4,7 +4,7 @@
 #
 # Author:      JB
 #
-# Created:     01/07/2014
+# Created:     08/08/2014
 # Copyright:   (c) JB 2014
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
@@ -15,18 +15,7 @@ def main():
 if __name__ == '__main__':
     main()
 
-selection = None
+import sys
 
-quoteNum = None
+print(sys.version)
 
-quoteSupplier = None
-
-quoteCustomer = None
-
-quoteBranch = None
-
-quoteEffDate = None
-
-quoteExpDate = None
-
-quoteSalesperson = None
