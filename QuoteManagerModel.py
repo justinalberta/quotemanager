@@ -18,30 +18,17 @@ if __name__ == '__main__':
 import os
 import pypyodbc
 import sys
+import util
+
 
 class dbAction():
-
-
-    def resource_path(self,relative_path):
-        '''Get absolute path to resource, works for dev and for PyInstaller '''
-        try:
-            # PyInstaller creates a temp folder and stores path in _MEIPASS
-            base_path = sys._MEIPASS
-            print('mei',base_path)
-
-        except Exception:
-            base_path = os.path.abspath(".")
-            print('abs',base_path)
-
-        print (os.path.join(base_path, relative_path))
-
-        return os.path.join(base_path, relative_path)
 
     def dbConnect(self):
 
         #fileLoc = os.path.join(os.path.dirname(__file__), 'Data\config.txt')
 
-        fileLoc = self.resource_path('Data\\config.txt')
+
+        fileLoc = util.resource_path('Data\\config.txt')
 
         print(fileLoc)
 

@@ -21,6 +21,7 @@ import QuoteManagerController
 from functools import partial
 from datetime import datetime
 import config
+import util
 
 class uploadPanel(wx.Panel):
 
@@ -69,27 +70,13 @@ class uploadPanel(wx.Panel):
 
         #todo make it an object
         QuoteManagerController.uploadQuoteHeader(str(config.quoteNum),str(config.quoteSupplier),str(config.quoteCustomer),str(config.quoteBranch),effDate,expDate,str(config.quoteSalesperson))
-        fileFinder = self.fileFind() #Run by Upload button. If no file is selected, then print message and return.
+        fileFinder = util.fileFind(self) #Run by Upload button. If no file is selected, then print message and return.
         if fileFinder ==  None:
             wx.StaticText(self,-1,"No file selected",(10,220))
             return
         else:
             QuoteManagerController.uploadQuote(fileFinder,config.selection)
             wx.StaticText(self,-1,"Upload Complete",(10,235))
-
-
-    def fileFind(self): #Select file to be uploaded, default csv files
-        wildcard = "CSV Files (*.csv;)|*.csv|" \
-        "All files (*.*)|*.*"
-        fileFind = wx.FileDialog(self,message="Choose a file",defaultFile="",wildcard=wildcard,style=wx.OPEN)
-        if fileFind.ShowModal()== wx.ID_OK:
-            path = fileFind.GetPath()
-            wx.StaticText(self,-1,"File Selected: " + path,(10,250))
-            return(path)
-        else:
-            fileFind.Destroy
-        fileFind.Destroy
-
 
 class pricePanel(wx.Panel):
         '''Queries the cost and quote of a SIM'''
@@ -159,7 +146,7 @@ class maintPanel(wx.Panel):
         uploadCombo.Bind(wx.EVT_COMBOBOX, self.onSelect)
 
         def upLoadIt(event):
-            fileFinder = fileFind() #Run by Upload button. If no file is selected, then print message and return.
+            fileFinder = util.fileFind(self) #Run by Upload button. If no file is selected, then print message and return.
             if fileFinder ==  None:
                 wx.StaticText(self,-1,"No file selected",(40,100))
                 return
@@ -167,18 +154,6 @@ class maintPanel(wx.Panel):
                 QuoteManagerController.uploadQuote(fileFinder,config.selection)
                 wx.StaticText(self,-1,"Upload Complete",(40,100))
 
-
-        def fileFind(): #Select file to be uploaded, default csv files                 #<---------------------- break out file upload and use in one callable function
-            wildcard = "CSV Files (*.csv;)|*.csv|" \
-            "All files (*.*)|*.*"
-            fileFind = wx.FileDialog(self,message="Choose a file",defaultFile="",wildcard=wildcard,style=wx.OPEN)
-            if fileFind.ShowModal()== wx.ID_OK:
-                path = fileFind.GetPath()
-                wx.StaticText(self,-1,"File Selected: " + path,(40,80))
-                return(path)
-            else:
-                fileFind.Destroy
-            fileFind.Destroy
         uploadButton = wx.Button(self,label="Upload",pos=(20, 40))
         uploadButton.Bind(wx.EVT_BUTTON,upLoadIt)
 
@@ -211,22 +186,9 @@ class poCheckPanel(wx.Panel):
             checkButton = wx.Button(self,label="Check PO",pos=(20, 40))
             checkButton.Bind(wx.EVT_BUTTON,self.startCheck)
 
-        def fileFind(self):
-            wildcard = "CSV Files (*.csv;)|*.csv|" \
-            "All files (*.*)|*.*"
-            fileFind = wx.FileDialog(self,message="Choose a file",defaultFile="",wildcard=wildcard,style=wx.OPEN)
-            if fileFind.ShowModal()== wx.ID_OK:
-                path = fileFind.GetPath()
-                wx.StaticText(self,-1,"File Selected: " + path,(40,80))
-                return(path)
-            else:
-                self.startCheck(fileFind)
-                fileFind.Destroy
-            fileFind.Destroy
-
 
         def startCheck(self,event):
-            fileFinder = self.fileFind() #Run by Upload button. If no file is selected, then print message and return.
+            fileFinder = util.fileFind(self) #Run by Upload button. If no file is selected, then print message and return.
             if fileFinder ==  None:
                 wx.StaticText(self,-1,"No file selected",(10,220))
                 return

@@ -14,6 +14,7 @@ import csv
 import os
 import QuoteManagerModel
 import config
+import util
 
 def main():
     pass
@@ -170,8 +171,7 @@ class commentPrinter():
 
         rownum = 0
 
-        myPath = QuoteManagerModel.dbAction()
-        ofile = open(myPath.resource_path('Quote_Comments.csv'),"wb")
+        ofile = open(util.resource_path('Data\Quote_Comments.csv'),"wb")
         #ofile  = open('C:\Users\JB\Desktop\Quote_Comments.csv', "wb")
         writer = csv.writer(ofile)
         for row in result2:
@@ -199,7 +199,6 @@ class commentPrinter():
                 simItemNum = str(quoteSIM[-5:])
                 quotePrice = str(row[1])
                 fullComment = 'Quote: %s Cost: %s Br: %s Expiry: %s'%(quoteNumber,quotePrice,quoteBranch,str(quoteExp[0]))
-                print(fullComment)
                 outRow = ('','',quoteBranch,simMfrNum,simItemNum,'10','',fullComment,"",str(quoteEff[0]),str(quoteExp[0]),'\r\n')
                 writer.writerow(outRow)
 
@@ -239,7 +238,8 @@ class poCheck():
                 reader = csv.reader(f)
 
                 rownum = 0
-                ofile  = open('C:\Users\JB\Desktop\PO_COST_REPORT.csv', "wb")
+
+                ofile = open(util.resource_path('Data\PO_COST_REPORT.csv'),"wb")
                 writer = csv.writer(ofile)
                 for row in reader:
 
@@ -293,26 +293,3 @@ class poCheck():
                 ofile.close()
 
 
-
-
-
-##def quoteTemplate():
-##    #create quote upload template
-##
-##def quoteQuery():
-##    #lookup individual parts quote
-##
-##def queryQuoteSummary():
-##    #look up quote summary
-##
-##def editQuote():
-##    #edit quote line
-##
-##def archiveQuote():
-##    #archive quotes to different archive table
-##
-##def quoteCommentForm():
-##    #create comment form for WPS
-##
-##
-##
